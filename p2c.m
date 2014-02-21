@@ -19,6 +19,6 @@ function [p, c, m, v] = p2c(params)
     p = p / ((params.amax - params.amin + 1) ...
             * (params.bmax - params.bmin + 1));
     c = [0 : (params.amax + params.bmax)];
-    m = [0 : (params.amax + params.bmax)] * p';
-    v = ([0 : (params.amax + params.bmax)] .^ 2) * p' - m ^ 2;
+    m = c * p';
+    v = (c .^ 2) * p' - m ^ 2;
 end
