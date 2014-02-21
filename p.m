@@ -22,36 +22,6 @@ function res = p(s, params, arg1, arg2, arg3, arg4)
     end
 end
 
-function res = p_a(a, params)
-% This function returns the probability p(a)
-% INPUT:
-%    a: int
-%
-% OUTPUT:
-%    res: double, p(a)
-
-%     global params.amin params.amax params.bmin params.bmax params.p1 params.p2 params.p3 N M
-    res = 0;
-    if (a >= params.amin) || (a <= params.amax)
-        res = 1 / (params.amax - params.amin + 1);
-    end
-end
-
-function res = p_b(b, params)
-% This function returns the probability p(b)
-% INPUT:
-%    b: int
-%
-% OUTPUT:
-%    res: double, p(b)
-
-%     global params.amin params.amax params.bmin params.bmax params.p1 params.p2 params.p3 N M
-    res = 0;
-    if (b >= params.bmin) && (b <= params.bmax)
-        res = 1 / (params.bmax - params.bmin + 1);
-    end
-end
-
 function res = p_c(c, params)
 % This function returns the probability p(c)
 % INPUT:

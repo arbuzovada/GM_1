@@ -22,3 +22,9 @@ hold on;
 plot([params.bmin : params.bmax], c, 'r')
 scatter(m, 0, 'g')
 v
+
+% plot([params.amin : params.amax], p, 'b')
+% hold on;
+% plot([params.amin : params.amax], c, 'r')
+% scatter(m, 0, 'g')
+% v
