@@ -14,17 +14,13 @@ function [p, c, m, v] = p2b_ad(a, d, params)
     if (d >= 0) && (d <= 2 * (a + params.bmax)) && ...
             (a >= params.amin) && (a <= params.amax) % some conditions 
         numerator = zeros(1, params.bmax - params.bmin + 1);
-%         denominator = 0;
         max_c = [params.bmin : params.bmax] + a;
         p_d_c = p2d_c(d, [0 : (a + params.bmax)], params);
+        p_c_a_b = p2c_ab([0 : a + params.bmax], a, [params.bmin : params.bmax], params);
         for c = 0 : a + params.bmax
             mask = (c <= max_c);
-            p_c_a_b = p2c_ab(c, a, [params.bmin : params.bmax], params);
-%             numerator = numerator + p_c_a_b(b - params.bmin + 1) * mask(b - params.bmin + 1) * d_cond_c(c + 1);
-            numerator = numerator + p_c_a_b .* mask * p_d_c(c + 1);
-%             denominator = denominator + sum(p_c_a_b(mask)) * p_d_c(c + 1);
+            numerator = numerator + p_c_a_b(:, :, c + 1) .* mask * p_d_c(c + 1);
         end
-%         p = numerator / denominator;
         p = numerator / sum(numerator);
         c = [params.bmin : params.bmax];
         m = c * p';
