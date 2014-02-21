@@ -1,5 +1,4 @@
 % CONSTANTS
-% global A_MIN A_MAX B_MIN B_MAX P_1 P_2 P_3 N M
 params.amin = 15;
 params.amax = 30;
 params.n = params.amax - params.amin + 1;
@@ -12,8 +11,14 @@ params.p3 = 0.5;
 
 % p('b|ad', params, 300, 19, 14)
 % p('d', params, params.amin + params.bmin)
-cur_sum = 0;
-for i = params.bmin : params.bmax
-    cur_sum = cur_sum + p('b|ad', params, i, 19, 19);
-end
-cur_sum
+% cur_sum = 0;
+% for i = 0 : 2 * (params.amax + params.bmax)%params.bmin : params.bmax
+%     cur_sum = cur_sum + p('d', params, i);%, 19, 19);
+% end
+% fprintf('%.10f\n', cur_sum);
+[p, c, m, v] = p2b_ad(19, 33, params);
+plot([params.bmin : params.bmax], p, 'b')
+hold on;
+plot([params.bmin : params.bmax], c, 'r')
+scatter(m, 0, 'g')
+v
