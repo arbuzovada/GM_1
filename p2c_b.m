@@ -10,7 +10,7 @@ function [p, c, m, v] = p2c_b(b, params)
 %    m: double, expectation
 %    v: double, variance
 
-    if (a >= params.amin) && (a <= params.amax)
+    if (b >= params.bmin) && (b <= params.bmax)
         p = zeros(1, params.amax + b + 1);
         for c = 0 : (params.amax + b)
             p(c + 1) = sum(sum(p2c_ab(c, [params.amin : params.amax], b, ...
