@@ -1,4 +1,4 @@
-function res = p(s, arg1, arg2, arg3, arg4)
+function res = p(s, params, arg1, arg2, arg3, arg4)
 % This function evaluates the probability specified by the string s with
 % the given arguments.
 % INPUT:
@@ -10,17 +10,19 @@ function res = p(s, arg1, arg2, arg3, arg4)
 
     res = NaN;
     if (s == 'a')
-        res = p_a(arg1);
+        res = p_a(arg1, params);
     elseif (s == 'b')
-        res = p_b(arg1);
+        res = p_b(arg1, params);
     elseif (s == 'c')
-        res = p_c(arg1);
+        res = p_c(arg1, params);
     elseif (s == 'd')
-        res = p_d(arg1);
+        res = p_d(arg1, params);
+    elseif (s == 'b|ad')
+        res = p_b_cond_a_d(arg1, arg2, arg3, params);
     end
 end
 
-function res = p_a(a)
+function res = p_a(a, params)
 % This function returns the probability p(a)
 % INPUT:
 %    a: int
@@ -28,14 +30,14 @@ function res = p_a(a)
 % OUTPUT:
 %    res: double, p(a)
 
-    global A_MIN A_MAX B_MIN B_MAX P_1 P_2 P_3 N M
+%     global params.amin params.amax params.bmin params.bmax params.p1 params.p2 params.p3 N M
     res = 0;
-    if (a >= A_MIN) || (a <= A_MAX)
-        res = 1 / (A_MAX - A_MIN + 1);
+    if (a >= params.amin) || (a <= params.amax)
+        res = 1 / (params.amax - params.amin + 1);
     end
 end
 
-function res = p_b(b)
+function res = p_b(b, params)
 % This function returns the probability p(b)
 % INPUT:
 %    b: int
@@ -43,14 +45,14 @@ function res = p_b(b)
 % OUTPUT:
 %    res: double, p(b)
 
-    global A_MIN A_MAX B_MIN B_MAX P_1 P_2 P_3 N M
+%     global params.amin params.amax params.bmin params.bmax params.p1 params.p2 params.p3 N M
     res = 0;
-    if (b >= B_MIN) && (b <= B_MAX)
-        res = 1 / (B_MAX - B_MIN + 1);
+    if (b >= params.bmin) && (b <= params.bmax)
+        res = 1 / (params.bmax - params.bmin + 1);
     end
 end
 
-function res = p_c_cond_a_b(c, a, b)
+function res = p_c_cond_a_b(c, a, b, params)
 % This function returns the probability p(c | a, b)
 % INPUT:
 %    c: int
@@ -60,43 +62,47 @@ function res = p_c_cond_a_b(c, a, b)
 % OUTPUT:
 %    res: n-by-m array of double, p(c | a, b)
     
-    global A_MIN A_MAX B_MIN B_MAX P_1 P_2 P_3 N M
+%     global params.amin params.amax params.bmin params.bmax params.p1 params.p2 params.p3 N M
     res = 0;
-    if all(a >= A_MIN) && all(a <= A_MAX) && all(b >= B_MIN) && all(b <= B_MAX) && ...
+    if all(a >= params.amin) && all(a <= params.amax) && all(b >= params.bmin) && all(b <= params.bmax) && ...
         (c >= 0) && (c <= max(a) + max(b))
         m = size(b, 2);
         n = size(a, 2);
 %         size(repmat(a', 1, m))
-%         size(repmat(b, n, 1) * P_2)
-        lambda = repmat(a', 1, m) * P_1 + repmat(b, n, 1) * P_2;
-        res = exp(-lambda) .* lambda .^ c / factorial(c);
-        if isnan(res)
-            fprintf('fail\n');
-        end
-        %res = poisspdf(c, a * P_1 + b * P_2);
+%         size(repmat(b, n, 1) * params.p2)
+        lambda = repmat(a', 1, m) * params.p1 + repmat(b, n, 1) * params.p2;
+%         res = exp(-lambda) .* lambda .^ c / factorial(c);
+%         res = ones(size(lambda));
+%         for i = 1 : c
+%             res = res .* lambda / i;
+%         end
+%         res = res .* exp(-lambda);
+%         if isnan(res)
+%             fprintf('fail\n');
+%         end
+        res = poisspdf(c, lambda);
     end
 end
 
-function res = p_d_cond_c(d, c)
+function res = p_d_cond_c(d, c, params)
 % This function returns the probability p(d | c)
 % INPUT:
 %    d: int
 %    c: 1-by-n array of int
-%
+% 
 % OUTPUT:
 %    res: 1-by-n array of double, p(d | c)
     
-    global A_MIN A_MAX B_MIN B_MAX P_1 P_2 P_3 N M
-    if all(c >= 0) && all(c <= A_MAX + B_MAX) %&& ...
+    if all(c >= 0) && all(c <= params.amax + params.bmax) %&& ...
             %all(d >= c) && all(d <= 2 * c)
-        %res = nchoosek(c, d - c) * P_3 ^ (d - c) * (1 - P_3) ^ (2 * c - d);
-        res = binopdf(c, d - c, P_3);
+        %res = nchoosek(c, d - c) * params.p3 ^ (d - c) * (1 - params.p3) ^ (2 * c - d);
+        res = binopdf(d - c, c, params.p3);
         res(d < c) = 0;
-        rec(d > 2 * c) = 0;
+        res(d > 2 * c) = 0;
     end
 end
 
-function res = p_c(c)
+function res = p_c(c, params)
 % This function returns the probability p(c)
 % INPUT:
 %    c: int
@@ -104,54 +110,66 @@ function res = p_c(c)
 % OUTPUT:
 %    res: double, p(c)
 
-    global A_MIN A_MAX B_MIN B_MAX P_1 P_2 P_3 N M
     res = 0;
-    if (c >= 0) && (c <= A_MAX + B_MAX)
-        p_a_b = p_c_cond_a_b(c, [A_MIN : A_MAX], [B_MIN : B_MAX]);
-        p_d_c = p_d_cond_c([c : 2 * c], c);
-        for d = c : 2 * c
-            for a = A_MIN : A_MAX
-                for b = B_MIN : B_MAX
-                    % res = res + p_c_cond_a_b(c, a, b);
-                    res = res + p_a_b(a - A_MIN + 1, b - B_MIN + 1);
-                end
-            end
-            res = res * p_d_c(d - c + 1);
-        end
-        res = res / ((A_MAX - A_MIN + 1) * (B_MAX - B_MIN + 1));
+    if (c >= 0) && (c <= params.amax + params.bmax)
+        p_a_b = p_c_cond_a_b(c, [params.amin : params.amax], ...
+            [params.bmin : params.bmax], params);
+        res = sum(sum(p_a_b(:, :))) / ((params.amax - params.amin + 1) ...
+            * (params.bmax - params.bmin + 1));
     end
 end
 
-function res = p_d(d)
+function res = p_d(d, params)
 % This function returns the probability p(d)
 % INPUT:
 %    d: int
-%
+% 
 % OUTPUT:
 %    res: double, p(d)
 
-    global A_MIN A_MAX B_MIN B_MAX P_1 P_2 P_3 N M 
     res = 0;
-    if (d >= 0) && (d <= 2 * (A_MAX + B_MAX))
-%         d_cond_c = zeros(1, A_MAX + B_MAX + 1);
-%         for c = 0 : A_MAX + B_MAX
-%             d_cond_c(c + 1) = p_d_cond_c(d, c);
-%         end
-        d_cond_c = p_d_cond_c(d, [0 : A_MAX + B_MAX])
-%         for a = A_MIN : A_MAX
-%             for b = B_MIN : B_MAX
-%                 for c = 0 : (a + b)
-%                     res = res + p_c_cond_a_b(c, a, b) * d_cond_c(c + 1);
-%                 end
-%             end
-%         end
-        c_count = repmat([A_MIN : A_MAX]', 1, M) + ...
-            repmat([B_MIN : B_MAX], N, 1);
-        for c = 0 : (A_MAX + B_MAX)
-            res = res + sum(sum(p_c_cond_a_b(c, [A_MIN : A_MAX], ...
-                [B_MIN : B_MAX]))) * d_cond_c(c + 1);
+    if (d >= 0) && (d <= 2 * (params.amax + params.bmax))
+        d_cond_c = p_d_cond_c(d, [0 : (params.amax + params.bmax)], params);
+        A = [params.amin : params.amax];
+        B = [params.bmin : params.bmax];
+        m = size(B, 2);
+        n = size(A, 2);
+        attend = repmat(A', 1, m) + repmat(B, n, 1);
+        lambda = repmat(A', 1, m) * params.p1 + repmat(B, n, 1) * params.p2;
+        p_a_b = exp(-lambda);
+        for c = 0 : (params.amax + params.bmax)
+%             p_a_b = p_c_cond_a_b(c, [params.amin : params.amax], ...
+%                 [params.bmin : params.bmax], params);
+            mask = (attend >= c);
+            res = res + sum(sum(p_a_b(mask))) * d_cond_c(c + 1);
+            p_a_b = p_a_b .* lambda / (c + 1);
         end
         
-        res = res / ((A_MAX - A_MIN + 1) * (B_MAX - B_MIN + 1));
+        res = res / ((params.amax - params.amin + 1) * ...
+            (params.bmax - params.bmin + 1));
+    end
+end
+
+function res = p_b_cond_a_d(b, a, d, params)
+% This function returns the probability p(b | a, d)
+% INPUT:
+%    b: int
+%    a: int
+%    d: int
+%
+% OUTPUT:
+%    res: double, p(b | a, d)
+
+    res = 0;
+    if (d >= 0) && (d <= 2 * (a + b))
+        d_cond_c = p_d_cond_c(d, [0 : (a + params.bmax)], params);
+        up = 0;
+        for c = 0 : a + params.bmax
+            mask = ([params.bmin : params.bmax] + a >= c);
+            p_c_a_b = p_c_cond_a_b(c, a, [params.bmin : params.bmax], params);
+            up = up + p_c_a_b(b - params.bmin + 1) * mask(b - params.bmin + 1) * d_cond_c(c + 1);
+            res = res + sum(p_c_a_b(mask)) * d_cond_c(c + 1);
+        end
+        res = up / res;
     end
 end
