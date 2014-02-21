@@ -32,7 +32,7 @@ for i1 = 0 : nsteps
     end
 end
 
-surf([0 : nsteps] / nsteps, [0 : nsteps] / nsteps, va-vb, 100 * (va > vb), 'EdgeColor', 'none')
+surf([0 : nsteps] / nsteps, [0 : nsteps] / nsteps, va - vb, 'EdgeColor', 'none') % abs(va-vb),
 hold on;
 % surf([0 : nsteps] / nsteps, [0 : nsteps] / nsteps, vb)
 xlabel('p_1')
