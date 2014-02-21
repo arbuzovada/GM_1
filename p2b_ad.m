@@ -7,7 +7,7 @@ function [p, c, m, v] = p2b_ad(a, d, params)
 %
 % OUTPUT:
 %    p: 1-by-(b_max - b_min + 1) array of double, p(b | a, d)
-%    c: 1-by-(b_max - b_min + 1) array of double, cumsum(p)
+%    c: [b_min : b_max]
 %    m: double, expectation
 %    v: double, variance
 
@@ -24,7 +24,7 @@ function [p, c, m, v] = p2b_ad(a, d, params)
             denominator = denominator + sum(p_c_a_b(mask)) * p_d_c(c + 1);
         end
         p = numerator / denominator;
-        c = cumsum(p);
+        c = [params.bmin : params.bmax];
         m = [params.bmin : params.bmax] * p';
         v = ([params.bmin : params.bmax] .^ 2) * p' - m ^ 2;
     else

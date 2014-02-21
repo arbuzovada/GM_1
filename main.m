@@ -16,15 +16,32 @@ params.p3 = 0.5;
 %     cur_sum = cur_sum + p('d', params, i);%, 19, 19);
 % end
 % fprintf('%.10f\n', cur_sum);
-[p, c, m, v] = p2b_ad(19, 33, params);
-plot([params.bmin : params.bmax], p, 'b')
-hold on;
-plot([params.bmin : params.bmax], c, 'r')
-scatter(m, 0, 'g')
-v
+% [p, c, m, v] = p2b_ad(19, 33, params);
+% plot([params.bmin : params.bmax], p, 'b')
+% hold on;
+% plot([params.bmin : params.bmax], c, 'r')
+% scatter(m, 0, 'g')
+% v
 
+% [p, c, m, v] = p2a(params);
 % plot([params.amin : params.amax], p, 'b')
 % hold on;
 % plot([params.amin : params.amax], c, 'r')
 % scatter(m, 0, 'g')
+% v
+
+[p, c, m, v] = p2c(params);
+plot(c, p, 'b')
+hold on;
+plot(c, cumsum(p), 'r')
+scatter(m, 0, 'g')
+m
+v
+
+% [p, c, m, v] = p2d(params);
+% plot(c, p, 'b')
+% hold on;
+% plot(c, cumsum(p), 'r')
+% scatter(m, 0, 'g')
+% m
 % v
