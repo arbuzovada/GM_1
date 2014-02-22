@@ -1,5 +1,5 @@
 function [p, c, m, v] = p2c_b(b, params)
-% This function returns the probability p(c | b)
+% This function evaluates distribution p(c | b)
 % INPUT:
 %    b: int
 %    params: structure of parameters
@@ -11,10 +11,15 @@ function [p, c, m, v] = p2c_b(b, params)
 %    v: double, variance
 
     if (b >= params.bmin) && (b <= params.bmax)
+        % preprocessing
         p = zeros(1, params.amax + b + 1);
+        lambda = [params.amin : params.amax] * params.p1 + ...
+            repmat(b, 1, params.amax - params.amin + 1) * params.p2;
+        p_c_a_b = exp(-lambda);
+        
         for c = 0 : (params.amax + b)
-            p(c + 1) = sum(sum(p2c_ab(c, [params.amin : params.amax], b, ...
-                params)));
+            p(c + 1) = sum(sum(p_c_a_b));
+            p_c_a_b = p_c_a_b .* lambda / (c + 1);
         end
         p = p / (params.amax - params.amin + 1);
         c = [0 : (params.amax + b)];

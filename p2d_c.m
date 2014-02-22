@@ -1,5 +1,5 @@
 function res = p2d_c(d, c, params)
-% This function returns the probability p(d | c)
+% This function evaluates distribution p(d | c)
 % INPUT:
 %    d: 1-by-n array of int
 %    c: 1-by-m array of int

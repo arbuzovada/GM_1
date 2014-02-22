@@ -1,5 +1,5 @@
 function [p, c, m, v] = p2a(params)
-% This function returns the probability p(a)
+% This function evaluates distribution p(a)
 % INPUT:
 %    params: structure of parameters
 %

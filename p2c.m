@@ -1,5 +1,5 @@
 function [p, c, m, v] = p2c(params)
-% This function returns the probability p(c)
+% This function evaluates distribution p(c)
 % INPUT:
 %    params: structure of parameters
 %
@@ -9,24 +9,21 @@ function [p, c, m, v] = p2c(params)
 %    m: double, expectation
 %    v: double, variance
 
+    % preprocessing
     p = zeros(1, params.amax + params.bmax + 1);
-    
     A = [params.amin : params.amax];
     B = [params.bmin : params.bmax];
     n = size(A, 2);
     k = size(B, 2);
     lambda = repmat(A', 1, k) * params.p1 + repmat(B, n, 1) * params.p2;
-    
     p_a_b = exp(-lambda);
+    
     for c = 0 : (params.amax + params.bmax)
-        p(c + 1) = sum(sum(p_a_b(:, :)));
+        p(c + 1) = sum(sum(p_a_b));
         p_a_b = p_a_b .* lambda / (c + 1);
     end
-%     p_a_b = p2c_ab([0 : (params.amax + params.bmax)], ...
-%         [params.amin : params.amax], [params.bmin : params.bmax], params);
-%     p = squeeze(sum(sum(p_a_b)))';
-    p = p / ((params.amax - params.amin + 1) ...
-            * (params.bmax - params.bmin + 1));
+    p = p / ((params.amax - params.amin + 1) * ...
+            (params.bmax - params.bmin + 1));
     c = [0 : (params.amax + params.bmax)];
     m = c * p';
     v = (c .^ 2) * p' - m ^ 2;

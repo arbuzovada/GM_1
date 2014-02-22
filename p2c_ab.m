@@ -1,5 +1,5 @@
 function res = p2c_ab(c, a, b, params)
-% This function returns the probability p(c | a, b)
+% This function evaluates distribution p(c | a, b)
 % INPUT:
 %    c: 1-by-k array of int
 %    a: 1-by-n array of int

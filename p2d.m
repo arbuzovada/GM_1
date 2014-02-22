@@ -1,5 +1,5 @@
 function [p, c, m, v] = p2d(params)
-% This function returns the probability p(d)
+% This function evaluates distribution p(d)
 % INPUT:
 %    params: structure of parameters
 %
@@ -9,6 +9,7 @@ function [p, c, m, v] = p2d(params)
 %    m: double, expectation
 %    v: double, variance
 
+    % preprocessing
     A = [params.amin : params.amax];
     B = [params.bmin : params.bmax];
     n = size(A, 2);
@@ -16,25 +17,16 @@ function [p, c, m, v] = p2d(params)
     attend = repmat(A', 1, k) + repmat(B, n, 1);
     lambda = repmat(A', 1, k) * params.p1 + repmat(B, n, 1) * params.p2;
     p = zeros(1, 2 * (params.amax + params.bmax) + 1);
-%     TODO: optimize these cycles
-%     for d = 0 : 2 * (params.amax + params.bmax)
-%         p_d_c = p2d_c(d, [0 : (params.amax + params.bmax)], params);
-%         p_a_b = exp(-lambda);
-%         for c = 0 : (params.amax + params.bmax)
-%             mask = (attend >= c);
-%             p(d + 1) = p(d + 1) + sum(sum(p_a_b(mask))) * p_d_c(c + 1);
-%             p_a_b = p_a_b .* lambda / (c + 1);
-%         end
-%     end
-    p_d_c = p2d_c([0 : 2 * (params.amax + params.bmax)], [0 : (params.amax + params.bmax)], params);
+    p_d_c = p2d_c([0 : 2 * (params.amax + params.bmax)], ...
+        [0 : (params.amax + params.bmax)], params);
     p_a_b = exp(-lambda);
+    
     for c = 0 : (params.amax + params.bmax)
         mask = (attend >= c);
         p = p + sum(sum(p_a_b(mask))) * p_d_c(:, c + 1)';
         p_a_b = p_a_b .* lambda / (c + 1);
     end
-        
-    p = p / (k * n);
+    p = p / (n * k);
     c = [0 : 2 * (params.amax + params.bmax)];
     m = c * p';
     v = (c .^ 2) * p' - m ^ 2;

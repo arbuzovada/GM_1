@@ -1,5 +1,5 @@
 function [p, c, m, v] = p2b_ad(a, d, params)
-% This function returns the probability p(b | a, d)
+% This function evaluates distribution p(b | a, d)
 % INPUT:
 %    a: int
 %    d: int
@@ -12,14 +12,19 @@ function [p, c, m, v] = p2b_ad(a, d, params)
 %    v: double, variance
 
     if (d >= 0) && (d <= 2 * (a + params.bmax)) && ...
-            (a >= params.amin) && (a <= params.amax) % some conditions 
+            (a >= params.amin) && (a <= params.amax)
+        % preprocessing
+        lambda = repmat(a, 1, params.bmax - params.bmin + 1) * ...
+            params.p1 + [params.bmin : params.bmax] * params.p2;
         numerator = zeros(1, params.bmax - params.bmin + 1);
         max_c = [params.bmin : params.bmax] + a;
         p_d_c = p2d_c(d, [0 : (a + params.bmax)], params);
-        p_c_a_b = p2c_ab([0 : a + params.bmax], a, [params.bmin : params.bmax], params);
+        p_c_a_b = exp(-lambda);
+        
         for c = 0 : a + params.bmax
             mask = (c <= max_c);
-            numerator = numerator + p_c_a_b(:, :, c + 1) .* mask * p_d_c(c + 1);
+            numerator = numerator + p_c_a_b .* mask * p_d_c(c + 1);
+            p_c_a_b = p_c_a_b .* lambda / (c + 1);
         end
         p = numerator / sum(numerator);
         c = [params.bmin : params.bmax];

@@ -1,5 +1,5 @@
 function [p, c, m, v] = p2b(params)
-% This function returns the probability p(b)
+% This function evaluates distributiony p(b)
 % INPUT:
 %    params: structure of parameters
 %
