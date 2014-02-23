@@ -16,15 +16,10 @@ function [p, c, m, v] = p1c_a(a, params)
         B = [params.bmin : params.bmax];
         k = size(B, 2);
         bin_a = binopdf([0 : a], a, params.p1);
-        bin_b = zeros(params.bmax + 1, k);
-        for b = B
-            bin_b(b - params.bmin + 1, 1 : (b + 1)) = ...
-                binopdf([0 : b], b, params.p2);
-        end
         
         for b = B
             p(1 : (a + b + 1)) = p(1 : (a + b + 1)) + ...
-                conv(bin_a, bin_b(b - params.bmin + 1, 1 : (b + 1)));
+                conv(bin_a, binopdf([0 : b], b, params.p2));
         end
         p = p / k;
         if nargout > 1

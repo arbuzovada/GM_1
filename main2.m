@@ -16,18 +16,18 @@ params.p3 = 0.5;
 %     cur_sum = cur_sum + p('d', params, i);%, 19, 19);
 % end
 % fprintf('%.10f\n', cur_sum);
-p_b_da = zeros(101, 761, 16);
-for d = 0 : 2 * (params.amax + params.bmax)
-    for a = params.amin : params.amax
-        if (d <= 2 * (a + params.bmax))
-            p_b_da(:, d + 1, a - params.amin + 1) = p2b_ad(a, d, params);
-            if any(isnan(p_b_da(:, d + 1, a - params.amin + 1)))
-                a
-                d
-            end
-        end
-    end
-end
+% p_b_da = zeros(101, 761, 16);
+% for d = 0 : 2 * (params.amax + params.bmax)
+%     for a = params.amin : params.amax
+%         if (d <= 2 * (a + params.bmax))
+%             p_b_da(:, d + 1, a - params.amin + 1) = p2b_ad(a, d, params);
+%             if any(isnan(p_b_da(:, d + 1, a - params.amin + 1)))
+%                 a
+%                 d
+%             end
+%         end
+%     end
+% end
 % plot(c, p, 'b')
 % hold on;
 % plot(c, cumsum(p), 'r')
@@ -35,29 +35,29 @@ end
 % m
 % v
 
-% [p, c, m, v] = p2a(params);
-% m
-% v
-% 
-% [p, c, m, v] = p2b(params);
-% m
-% v
+[p, c, m, v] = p2a(params);
+m
+v
 
-% [p_c, c, m, v] = p2c(params);
+[p, c, m, v] = p2b(params);
+m
+v
+
+[p_c, c, m, v] = p2c(params);
 % plot(c, p, 'b')
 % hold on;
 % plot(c, cumsum(p), 'r')
 % scatter(m, 0, 'g')
-% m
-% v
+m
+v
 
-% [p_d, c, m, v] = p2d(params);
+[p_d, c, m, v] = p2d(params);
 % plot(c, p, 'b')
 % hold on;
 % plot(c, cumsum(p), 'r')
 % scatter(m, 0, 'g')
-% m
-% v
+m
+v
 
 % [p, c, m, v] = p2c_a(23, params);
 % plot(c, p, 'b')
