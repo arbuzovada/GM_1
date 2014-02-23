@@ -13,5 +13,5 @@ function [p, c, m, v] = p2a(params)
         params.amin + 1);
     c = [params.amin : params.amax];
     m = (params.amin + params.amax) / 2;
-    v = (params.amax - params.amin) ^ 2 / 12;
+    v = ((params.amax - params.amin + 1) ^ 2 - 1) / 12;
 end

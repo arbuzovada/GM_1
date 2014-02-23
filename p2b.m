@@ -13,5 +13,5 @@ function [p, c, m, v] = p2b(params)
         params.bmin + 1);
     c = [params.bmin : params.bmax];
     m = (params.bmin + params.bmax) / 2;
-    v = (params.bmax - params.bmin) ^ 2 / 12;
+    v = ((params.bmax - params.bmin + 1) ^ 2 - 1) / 12;
 end

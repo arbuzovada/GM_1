@@ -1,0 +1,37 @@
+function [p, c, m, v] = p1c_a(a, params)
+% This function evaluates distribution p(c | a)
+% INPUT:
+%    a: int
+%    params: structure of parameters
+%
+% OUTPUT:
+%    p: 1-by-(a + b_max + 1) array of double, p(c | a)
+%    c: [0 : (a + b_max)]
+%    m: double, expectation
+%    v: double, variance
+
+    if (a >= params.amin) && (a <= params.amax)
+        % preprocessing
+        p = zeros(1, a + params.bmax + 1);
+        B = [params.bmin : params.bmax];
+        k = size(B, 2);
+        bin_a = binopdf([0 : a], a, params.p1);
+        bin_b = zeros(params.bmax + 1, k);
+        for b = B
+            bin_b(b - params.bmin + 1, 1 : (b + 1)) = ...
+                binopdf([0 : b], b, params.p2);
+        end
+        
+        for b = B
+            p(1 : (a + b + 1)) = p(1 : (a + b + 1)) + ...
+                conv(bin_a, bin_b(b - params.bmin + 1, 1 : (b + 1)));
+        end
+        p = p / k;
+        c = [0 : (a + params.bmax)];
+        m = c * p';
+        v = (c .^ 2) * p' - m ^ 2;
+    else
+        throw(MException('p2c_a:InvalidArguments', ['a must ' ...
+            'satisfy the following condition:\na_min <= a <= a_max\n']));
+    end
+end

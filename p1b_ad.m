@@ -1,4 +1,4 @@
-function [p, c, m, v] = p2b_ad(a, d, params)
+function [p, c, m, v] = p1b_ad(a, d, params)
 % This function evaluates distribution p(b | a, d)
 % INPUT:
 %    a: int
@@ -14,27 +14,23 @@ function [p, c, m, v] = p2b_ad(a, d, params)
     if (d >= 0) && (d <= 2 * (a + params.bmax)) && ...
             (a >= params.amin) && (a <= params.amax)
         % preprocessing
-        lambda = repmat(a, 1, params.bmax - params.bmin + 1) * ...
-            params.p1 + [params.bmin : params.bmax] * params.p2;
         numerator = zeros(1, params.bmax - params.bmin + 1);
-        max_c = [params.bmin : params.bmax] + a;
+        B = [params.bmin : params.bmax];
+        k = size(B, 2);
+        bin_a = binopdf([0 : a], a, params.p1);
+        bin_b = zeros(params.bmax + 1, k);
+        for b = B
+            bin_b(b - params.bmin + 1, 1 : (b + 1)) = ...
+                binopdf([0 : b], b, params.p2);
+        end
         p_d_c = p2d_c(d, [0 : (a + params.bmax)], params);
-%         p_d_c = 1; % ???
-        p_c_a_b = exp(-lambda);
         
-        for c = 0 : a + params.bmax
-            mask = (c <= max_c);
-            numerator = numerator + p_c_a_b .* mask * p_d_c(c + 1); %* (d >= c) * (d <= 2 * c); %
-            p_c_a_b = p_c_a_b .* lambda / (c + 1);
-%             p_d_c = p_d_c * (2 * c - d) * params.p3 / ((d - c + 1) * ...
-%                 (1 - params.p3));
-%             if isnan(p_d_c)
-%                 c
-%                 return
-%             end
+        for b = B
+            numerator(b - params.bmin + 1) = numerator(b - params.bmin + 1) + ...
+            conv(bin_a, bin_b(b - params.bmin + 1, 1 : (b + 1))) * p_d_c(1 : (a + b + 1))';
         end
         p = numerator / sum(numerator);
-        c = [params.bmin : params.bmax];
+        c = B;
         m = c * p';
         v = (c .^ 2) * p' - m ^ 2;
     else

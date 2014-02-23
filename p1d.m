@@ -1,4 +1,4 @@
-function [p, c, m, v] = p2d(params)
+function [p, c, m, v] = p1d(params)
 % This function evaluates distribution p(d)
 % INPUT:
 %    params: structure of parameters
@@ -12,7 +12,7 @@ function [p, c, m, v] = p2d(params)
     % preprocessing
     p_d_c = p2d_c([0 : 2 * (params.amax + params.bmax)], ...
         [0 : (params.amax + params.bmax)], params);
-    p_c = p2c(params);
+    p_c = p1c(params);
     
     p = p_c * p_d_c';
     c = [0 : 2 * (params.amax + params.bmax)];
