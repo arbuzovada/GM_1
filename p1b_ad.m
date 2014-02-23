@@ -1,4 +1,4 @@
-function [p, c, m, v] = p1b_ad(a, d, params)
+function [p, b, m, v] = p1b_ad(a, d, params)
 % This function evaluates distribution p(b | a, d)
 % INPUT:
 %    a: int
@@ -7,7 +7,7 @@ function [p, c, m, v] = p1b_ad(a, d, params)
 %
 % OUTPUT:
 %    p: 1-by-(b_max - b_min + 1) array of double, p(b | a, d)
-%    c: [b_min : b_max]
+%    b: [b_min : b_max]
 %    m: double, expectation
 %    v: double, variance
 
@@ -30,9 +30,11 @@ function [p, c, m, v] = p1b_ad(a, d, params)
             conv(bin_a, bin_b(b - params.bmin + 1, 1 : (b + 1))) * p_d_c(1 : (a + b + 1))';
         end
         p = numerator / sum(numerator);
-        c = B;
-        m = c * p';
-        v = (c .^ 2) * p' - m ^ 2;
+        if nargout > 1
+            b = B;
+            m = b * p';
+            v = (b .^ 2) * p' - m ^ 2;
+        end
     else
         throw(MException('p2b_ad:InvalidArguments', ['Arguments must ' ...
             'satisfy the following conditions:\na_min <= a <= a_max\n' ...

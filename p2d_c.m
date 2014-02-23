@@ -7,16 +7,12 @@ function res = p2d_c(d, c, params)
 % OUTPUT:
 %    res: n-by-m array of double, p(d | c)
     
-    if all(c >= 0) && all(c <= params.amax + params.bmax) %&& ...
-%             all(d >= c) && all(d <= 2 * c)
-%         res = nchoosek(c, d - c) * params.p3 ^ (d - c) * (1 - params.p3) ^ (2 * c - d);
+    if all(c >= 0) && all(c <= params.amax + params.bmax)
         n = size(d, 2);
         m = size(c, 2);
         d = reshape(repmat(d, m, 1), 1, n * m);
         c = repmat(c, 1, n);
         res = binopdf(d - c, c, params.p3);
-%         res(d < c) = 0;
-%         res(d > 2 * c) = 0;
         res = reshape(res, m, n)';
     else
         throw(MException('p2d_c:InvalidArguments', ['Arguments must ' ...

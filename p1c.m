@@ -34,7 +34,9 @@ function [p, c, m, v] = p1c(params)
         end
     end
     p = p / (n * k);
-    c = [0 : (params.amax + params.bmax)];
-    m = c * p';
-    v = (c .^ 2) * p' - m ^ 2;
+    if nargout > 1
+        c = [0 : (params.amax + params.bmax)];
+        m = c * p';
+        v = (c .^ 2) * p' - m ^ 2;
+    end
 end

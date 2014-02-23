@@ -22,9 +22,11 @@ function [p, c, m, v] = p2c_a(a, params)
             p_c_a_b = p_c_a_b .* lambda / (c + 1);
         end
         p = p / (params.bmax - params.bmin + 1);
-        c = [0 : (a + params.bmax)];
-        m = c * p';
-        v = (c .^ 2) * p' - m ^ 2;
+        if nargout > 1
+            c = [0 : (a + params.bmax)];
+            m = c * p';
+            v = (c .^ 2) * p' - m ^ 2;
+        end
     else
         throw(MException('p2c_a:InvalidArguments', ['a must ' ...
             'satisfy the following condition:\na_min <= a <= a_max\n']));
