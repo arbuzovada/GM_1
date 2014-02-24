@@ -1,0 +1,157 @@
+\documentclass[12pt,a4paper,oneside,fleqn,leqno]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{wrapfig}
+\usepackage{float}
+%\usepackage{caption}
+%\usepackage{subcaption}
+\usepackage{listings}
+\usepackage[center]{caption}
+\geometry{a4paper}
+\usepackage[russian]{babel}
+
+\setlength{\topmargin}{-1.0in}
+\setlength{\textheight}{10.5in}
+\setlength{\oddsidemargin}{-.125in}
+\setlength{\textwidth}{6.5in}
+
+\begin{document}
+	\begin{titlepage}
+		\begin{center}
+			\large Московский государственный университет им.\,М.\,В.\,Ломоносова\\
+			Факультет вычислительной математики и кибернетики \\
+			Кафедра математических методов прогнозирования \\[4.5cm] 
+			\Huge Задание \No\,1.\\Вероятностные модели посещаемости курса\\[5.5cm]
+		\end{center}
+		\normalsize
+		\begin{flushright}
+			\emph{Автор:} Арбузова Дарья\\
+			\emph{Группа:} 417\\
+		\end{flushright}
+		\vfill
+		\begin{center}
+			Москва, 2014
+		\end{center}
+	\end{titlepage}
+	\section{Цели задания}
+		В рамках данного задания мы познакомимся с байесовскими сетями…
+	\section{Описание моделей}
+		Рассмотрим модель посещаемости студентами одного курса лекции. Пусть аудитория данного курса состоит из студентов профильной кафедры, а также студентов других кафедр. Обозначим через $a$ количество студентов, распределившихся на профильную кафедру, а через $b$ --- количество студентов других кафедр на курсе. Пусть студенты профильной кафедры посещают курс с некоторой вероятностью $p_1$, а студенты остальных кафедр --- с вероятностью $p_2$. Обозначим через $c$ количество студентов на данной лекции. Тогда случайная величина $c|a,b$ есть сумма двух случайных величин, распределенных по биномиальному закону $B(a,p_1)$ и $B(b,p_2)$ соответственно. Пусть далее на лекции по курсу ведется запись студентов. При этом каждый студент записывается сам, а также, быть может, записывает своего товарища, которого на лекции на самом деле нет. Пусть студент записывает своего товарища с некоторой вероятностью $p_3$. Обозначим через $d$ общее количество записавшихся на данной лекции. Тогда случайная величина $d|c$ представляет собой сумму c и случайной величины, распределенной по биномиальному закону $B(c,p_3)$. Для завершения задания вероятностной модели осталось определить априорные вероятности для $a$ и для $b$. Пусть обе эти величины распределены равномерно в своих интервалах $[a_{min}; a_{max}]$ и $[b_{min}; b_{max}]$ (дискретное равномерное распределение). Таким образом, мы определили следующую вероятностную модель: \par
+		Рассмотрим несколько упрощенную версию модели 1. Известно, что биномиальное распределение $B(n,p)$ при большом количестве испытаний и маленькой вероятности успеха может быть с высокой точностью приближено пуассоновским распределением $Poiss(\lambda)$ с $\lambda = np$. Известно также, что сумма двух пуассоновских распределений с параметрами $\lambda_1$ и $\lambda_2$ есть пуассоновское распределение с параметром $\lambda_1+\lambda_2$ (для биномиальных распределений аналогичное неверно). Таким образом, мы можем сформулировать вероятностную модель, которая является приближенной версией модели 1:
+	
+	\section{Модель 1}
+		\subsection{Вывод формул для расчёта распределений}
+			Проведём вывод необходимых распределений для рассматриваемой модели, пользуясь фактами из теории вероятностей:
+			\begin{description}
+				\item[$a$]
+				$\sim R[a_{min}; a_{max}]$\\
+				$$p(a) = \frac{1}{a_{max} - a_{min} + 1}$$
+				$$\mathbb{E}[a] = \frac{a_{min} + a_{max}}{2}$$
+				$$\mathbb{D}[a] = \frac{(a_{max} - a_{min} + 1)^2 - 1}{12}$$
+				\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+				\item[$b$]
+				$\sim R[b_{min}; b_{max}]$ аналогично:\\
+				$$p(b) = \frac{1}{b_{max} - b_{min} + 1}$$
+				$$\mathbb{E}[b] = \frac{b_{min} + b_{max}}{2}$$
+				$$\mathbb{D}[b] = \frac{(b_{max} - b_{min} + 1)^2 - 1}{12}$$
+				\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+				\item[$p(b|a)$]
+				$$ p(b|a) = \frac{p(a, b)}{p(a)} = \frac{\sum\limits_{c = 0}^{a + b} \sum\limits_{d = c}^{2c} p(a, b, c, d)}{p(a)} = p(b) \cdot \sum\limits_{c = 0}^{a + b} p(c|a, b) \cdot \sum\limits_{d = c}^{2c} p(d|c) = p(b)$$
+				Величины $a$ и $b$ независимы в рамках данной модели.\\
+				\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+				\item[$c|a,b$]
+				$\sim B(a, p_1) + B(b, p_2)$\\
+				Пусть $c = x + y,$ где $x \sim B(a, p_1), y \sim B(b, p_2),$ тогда
+				$$p(c|a,b) = \sum_{k = 0}^c p(x = k; a, p_1) \cdot p(y = c - k; b, p_2) = $$ $$
+				=\sum_{k = 0}^c C_a^k p_1^k (1 - p_1)^{a - k} \cdot C_b^{c - k} p_2^{c - k} (1 - p_2)^{b + k - c}$$
+				\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+				\item[$d|c$]
+				$\sim c + B(c, p_3)$
+				$$ p(d|c) = C_{c}^{d - c}p_3^{d - c}(1 - p_3)^{2c - d}$$
+				\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+				\item[$c|a$]
+				$$p(c|a) = \frac{p(a, c)}{p(a)} = \frac{\sum\limits_{b = b_{min}}^{b_{max}} \sum\limits_{d = 0}^{2(a + b)}p(a, b, c, d) }{p(a)} = $$ $$ = p(b) \cdot \sum\limits_{b = b_{min}}^{b_{max}} p(c|a, b) \cdot \sum\limits_{d = 0}^{2(a + b)}p(d|c) = p(b) \cdot \sum\limits_{b = b_{min}}^{b_{max}} p(c|a, b)$$
+				\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+				\item[$c|b$] аналогично:
+				$$p(c|b) = p(a) \cdot \sum\limits_{a = a_{min}}^{a_{max}} p(c|a, b)$$
+				\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+				\item[$c$]
+				$$p(c) = \sum\limits_{a = a_{min}}^{a_{max}} \sum\limits_{b = b_{min}}^{b_{max}} \sum\limits_{d = 0}^{2(a + b)} p(a, b, c, d) =$$ 
+				$$ = p(a) \cdot p(b) \cdot \sum\limits_{a = a_{min}}^{a_{max}} \sum\limits_{b = b_{min}}^{b_{max}} p(c|a,b) \cdot \sum\limits_{d = 0}^{2(a + b)} p(d|c) = p(a)\cdot p(b) \cdot  \sum\limits_{a = a_{min}}^{a_{max}} \sum\limits_{b = b_{min}}^{b_{max}} p(c|a,b)$$
+				\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+				\item[$d$]
+				$$ p(d) = \sum\limits_{c = 0}^{a_{max} + b_{max}}p(d|c)p(c)$$
+				\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+			\end{description}
+		\subsection{Априорные распределения}
+			Требуется рассчитать математические ожидания и дисперсии априорных распределений $a, b, c$ и $d$.\par
+			Пусть для некоторый случайной величины $x$ известно её распределение, тогда
+			$$ \mathbb{E}[x] = \sum_{x = x_{min}}^{x_{max}}xp(x)$$
+			$$ \mathbb{D}[x] = \sum_{x = x_{min}}^{x_{max}}x^2p(x) - (\mathbb{E}[x])^2$$\par
+			В пункте 3.1 было показано, как получить априорные распределения, имея $p(c|a,b)$ и $p(d|c).$\par
+			Результаты приведены в таблице \ref{tab:aprior1}:
+			\begin{table}[H]
+			\centering
+			\begin{tabular}{|c|c|c|}
+				\hline
+				Величина & $\mathbb{E}$ & $\mathbb{D}$\\
+				\hline
+				a & 22.5 & 21.25\\
+				\hline
+				b & 300 & 850\\
+				\hline
+				c & 26.25 & 27.3125\\
+				\hline
+				d & 39.375 & 68.0156\\
+				\hline
+				\end{tabular}
+			\caption{Априорные распределения}
+			\label{tab:aprior1}
+		\end{table}
+		\subsection{Прогноз величины $b$}
+			Требуется пронаблюдать, как происходит уточнение прогноза для величины $b$ с приходом новой информации.\par
+			Рассмотрим распределения $b, b|a, b|a,d$. Как было показано выше в пункте 3.1, $b$ и $b|a$ распределены одинаково, поэтому остаётся сравнить только $b$ с $b|a, d$.\par
+			На рисунке ? показано распределение соответствующих величин, а также указаны их матожидания и дисперсии.
+		\subsection{Влияние параметров $p_1$ и $p_2$}
+		\subsection{Временные замеры}
+	\section{Модель 2}
+		\subsection{Априорные распределения}
+			Аналогично пункту для модели 1.\par
+			Результаты приведены в таблице \ref{tab:aprior2}:
+			\begin{table}[H]
+			\centering
+			\begin{tabular}{|c|c|c|}
+				\hline
+				Величина & $\mathbb{E}$ & $\mathbb{D}$\\
+				\hline
+				a & 22.5 & 21.25\\
+				\hline
+				b & 300 & 850\\
+				\hline
+				c & 26.25 & 33.6875\\
+				\hline
+				d & 39.375 & 82.3594\\
+				\hline
+				\end{tabular}
+			\caption{Априорные распределения}
+			\label{tab:aprior2}
+		\end{table}
+		\subsection{Прогноз величины $b$}
+		\subsection{Влияние параметров $p_1$ и $p_2$}
+		\subsection{Временные замеры}
+	\section{Сравнение моделей 1 и 2}
+		Модель 2 получена из первой путём предельного перехода… Значит, первая описывает всё лучше и правильней при малых значениях.
+	\section{Выводы}
+		Печаль-беда
+	\section{Список литературы}
+		\begin{itemize}
+			\item
+			http://www.machinelearning.ru/wiki/index.php?title=
+			\item
+			Лекции и семинары по графическим моделям
+		\end{itemize}
+\end{document}
