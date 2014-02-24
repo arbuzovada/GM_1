@@ -67,6 +67,22 @@ v
 % m
 % v
 
+[p, c, m, v] = p2a(params);
+m
+v
+
+[p, c, m, v] = p2b(params);
+m
+v
+
+[p_c, c, m, v] = p2c(params);
+% plot(c, p, 'b')
+% hold on;
+% plot(c, cumsum(p), 'r')
+% scatter(m, 0, 'g')
+% m
+% v
+
 % [p, d, m, v] = p2d(params);
 % plot(d, p, 'b')
 % hold on;
@@ -74,6 +90,16 @@ v
 % scatter(m, 0, 'g')
 % m
 % v
+m
+v
+
+[p_d, c, m, v] = p2d(params);
+% plot(c, p, 'b')
+% hold on;
+% plot(c, cumsum(p), 'r')
+% scatter(m, 0, 'g')
+m
+v
 
 % [p, c, m, v] = p2c_a(23, params);
 % plot(c, p, 'b')
