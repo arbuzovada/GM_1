@@ -1,5 +1,5 @@
 function [p, c, m, v] = p1c(params)
-% This function evaluates distribution p(c)
+% This function evaluates distribution p(c) for model 1
 % INPUT:
 %    params: structure of parameters
 %
@@ -15,16 +15,12 @@ function [p, c, m, v] = p1c(params)
     B = [params.bmin : params.bmax];
     n = size(A, 2);
     k = size(B, 2);
-    bin_a = zeros(params.amax + 1, n);
-    for a = A
-        bin_a(a - params.amin + 1, 1 : (a + 1)) = ...
-            binopdf([0 : a], a, params.p1);
-    end
-    bin_b = zeros(params.bmax + 1, k);
-    for b = B
-        bin_b(b - params.bmin + 1, 1 : (b + 1)) = ...
-            binopdf([0 : b], b, params.p2);
-    end
+    bin_a = binopdf(repmat([0 : params.amax], n, 1), ...
+        repmat(A', 1, params.amax + 1), ...
+        ones(n, params.amax + 1) * params.p1);
+    bin_b = binopdf(repmat([0 : params.bmax], k, 1), ...
+        repmat(B', 1, params.bmax + 1), ...
+        ones(k, params.bmax + 1) * params.p2);
     
     for a = A
         for b = B

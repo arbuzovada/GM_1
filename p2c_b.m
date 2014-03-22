@@ -1,5 +1,5 @@
 function [p, c, m, v] = p2c_b(b, params)
-% This function evaluates distribution p(c | b)
+% This function evaluates distribution p(c | b) for model 2
 % INPUT:
 %    b: int
 %    params: structure of parameters
@@ -21,7 +21,7 @@ function [p, c, m, v] = p2c_b(b, params)
             p(c + 1) = sum(sum(p_c_a_b));
             p_c_a_b = p_c_a_b .* lambda / (c + 1);
         end
-        p = p / (params.amax - params.amin + 1);
+        p = p / sum(p);%(params.amax - params.amin + 1);
         if nargout > 1
             c = [0 : (params.amax + b)];
             m = c * p';
